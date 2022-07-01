@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    html, body, .wrap {
+      width: 100%;
+      height: 100%;
+    }
+    .main { position: relative; }
+    .mask { position: absolute; top: 0; left: 0; background-color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center;}
+    .mask .rule-show { padding: 12px; }
+    .content { background: url("./static/imgs/微信图片_20220701164858.png") no-repeat center; background-size: 100%; }
+  </style>
+</head>
+<body>
+    <div class="main wrap">
+      <!-- 遮罩层 -->
+      <div class="mask wrap" id="mask">
+        <div class="rule-show">
+          <span></span>
+        </div>
+        <div class="res-inpt">
+          <span>请输入结果: </span><input type="text" id="resInput">
+          <button onclick="submit()">确认</button>
+        </div>
+      </div>
+      <!-- 内容区 -->
+      <div class="content wrap">
+
+      </div>
+    </div>
+</body>
+<script>
+  const symbols = ['+', '-', '*'];
+  const getRandom = (min, max) => Math.round(Math.random() * (max - min) + min);
+
+  const list = new Array(getRandom(2, 3))
+  const rules = [...list].map((next, index) => {
+    return {
+      value: getRandom(0, 10),
+      rule: symbols[index]
+    };
+  })
+
+  const resRule = rules.reduce((pre, next) => `${pre}${pre? next.rule: ''}${next.value}`, '');
+  const res = eval(resRule)
+  
+  document.querySelector('.rule-show').innerHTML = resRule;
+
+  const submit = () => {
+    if (resInput.value == res) {
+      mask.style.cssText = `z-index: -999; opacity: 0`;
+    }
+  }
+  document.addEventListener('keyup', ({ keyCode }) => {
+    if (keyCode === 13) {
+      submit()
+    } 
+  })
+</script>
+
+</html>
