@@ -10,32 +10,71 @@
       margin: 0;
       padding: 0;
       list-style: none;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    input, button {
+      outline: none;
     }
     html, body, .wrap {
       width: 100%;
       height: 100%;
     }
+
+    @keyframes anmtion {
+      0% {transform: translateX(-5px);}
+      100% {transform: translateX(5px);}
+    }
+
     .main { position: relative; }
-    .mask { position: absolute; top: 0; left: 0; background-color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center;}
-    .mask .rule-show { padding: 12px; }
-    .content { background: url("./static/imgs/微信图片_20220701164858.png") no-repeat center; background-size: 100%; }
+    .mask { position: absolute; top: 0; left: 0; background-color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    #resInput {
+      outline: none;
+      width: 100px;
+      border: 1px dashed #000;
+      padding: 2px 6px;
+      border-radius: 5px;
+    }
+    .anmt {
+      color: #fff;
+      background-color: rgba(255, 0, 0, 0.865);
+      animation: anmtion 0.1s linear 0s 3 alternate;
+    }
+    input::-webkit-input-placeholder {
+      color: #fff;
+    }
+
+
+    .mask .res-inpt { display: flex; align-items:  center; }
+    .mask .res-inpt span { padding: 0 6px;}
+    .mask .res-inpt input, .mask .res-inpt button { margin: 6px; padding: 0 12px;}
+    .content { 
+      width: 0;
+      height: 0;
+      background: url("./static/imgs/微信图片_20220701164858.png") no-repeat center; background-size: 100%; 
+      transition: 1s;
+    }
+    .content.show {
+      width: 100%;
+      height: 100%;
+      /* animation: anmtion 0.05s linear 1s 3 alternate; */
+    }
   </style>
 </head>
 <body>
     <div class="main wrap">
       <!-- 遮罩层 -->
       <div class="mask wrap" id="mask">
-        <div class="rule-show">
-          <span></span>
-        </div>
         <div class="res-inpt">
-          <span>请输入结果: </span><input type="text" id="resInput">
+          <span id="ruleDom"></span>
+          <span> = </span>
+          <input type="text" id="resInput" oninput="resInput.className = ''">
           <button onclick="submit()">确认</button>
         </div>
       </div>
       <!-- 内容区 -->
-      <div class="content wrap">
-
+      <div class="content" id="content">
+        <span style="font-size: 20px;">666</span>
       </div>
     </div>
 </body>
@@ -51,14 +90,19 @@
     };
   })
 
-  const resRule = rules.reduce((pre, next) => `${pre}${pre? next.rule: ''}${next.value}`, '');
+  const resRule = rules.reduce((pre, next) => `${pre}${pre? ` ${next.rule} `: ''}${next.value}`, '');
   const res = eval(resRule)
   
-  document.querySelector('.rule-show').innerHTML = resRule;
+  ruleDom.innerHTML = resRule;
 
   const submit = () => {
-    if (resInput.value == res) {
+    if (resInput.value !== '' && resInput.value == res) {
       mask.style.cssText = `z-index: -999; opacity: 0`;
+      content.className = 'content show';
+    } else {
+      resInput.className = 'anmt';
+      resInput.value = '';
+      resInput.placeholder = '输入有误';
     }
   }
   document.addEventListener('keyup', ({ keyCode }) => {
@@ -66,6 +110,7 @@
       submit()
     } 
   })
+
 </script>
 
 </html>
